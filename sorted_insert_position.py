@@ -14,28 +14,18 @@ def find_index(sorted_list, target):
     # keep track of start and end index points, this is how we will "half" the array
     s = 0
     e = len(sorted_list) - 1
-    # check to see if target is at edges or beyond edges
-    # it might be a sloppy way of doing it, but it simplifies the logic for dealing with these
-    # endpoint cases in my opinion.
-    if sorted_list[s] == target or target < sorted_list[s]:
-        return s
-    elif sorted_list[e] == target:
-        return e
-    elif target > sorted_list[e]:
-        return e + 1
-    # stop when the distance between the end points is <= 1 (when they're neighbors)
-    while e - s > 1:
+    while e >= s:
         p = (s + e) // 2
         # if number at pivot is == target, return pivot index
         if sorted_list[p] == target:
             return p
         # if num > target, look at the left half
         elif sorted_list[p] > target:
-            e = p
+            e = p - 1
             t = p
         # if num < target, look at right half
         else:
-            s = p
+            s = p + 1
             t = p + 1
     # print(f'num would be at index: {t}')
     return t
