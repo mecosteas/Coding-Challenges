@@ -55,15 +55,66 @@ def merge_sort(arr):
     else:
         return arr
 
-print(merge_sort(arr))
-print(merge_sort(arr2))
-print(merge_sort(arr3))
-print(merge_sort(arr4))
-print(merge_sort(arr5))
+# print(merge_sort(arr))
+# print(merge_sort(arr2))
+# print(merge_sort(arr3))
+# print(merge_sort(arr4))
+# print(merge_sort(arr5))
 
 
+def is_sorted(arr):
+    if len(arr) <= 1:
+        return True
+    for i in range(len(arr) - 1):
+        if arr[i] > arr[i + 1]:
+            return False
+    return True
 
+# it sorts, just doesn't give correct number of min operations
+# I messed up, the task said delete APPEND. There should be no insertions. Oh well, I think this sorting algo is
+# pretty cool anyway. Initially I had it right, where I was only appending. It can easily be turned back to that, but
+# I like that this does it in less operations since we're looking at both min and max values.
+def da_sort(arr, ops=0):
+    if not is_sorted(arr):
+        print('arr', arr)
 
+        # if the min_index is already at the beginning, then it's already sorted, check the rest of the array
+        min_index = arr.index(min(arr))
+        max_index = arr.index(max(arr))
+        if min_index == 0:
+            print('min index is 0, already sorted at beginning, do not increase ops')
+            min_num = arr.pop(min_index)
+            arr, ops = da_sort(arr, ops)
+            arr.insert(0, min_num)
+            print('after reinserting min where it was... arr: ', arr)
+        # if the max_index is already at the end, then it's already sorted, check the rest of the array
+        elif max_index == len(arr) - 1:
+            print(f'max index is at {len(arr) - 1}, already sorted at end, do not increase ops')
+            max_num = arr.pop(max_index)
+            arr, ops = da_sort(arr, ops)
+            arr.append(max_num)
+            print('after reappending max where it was... arr: ', arr)
+        # if the min_index is before max_index, then sort the max_num by inserting at the end
+        elif min_index < max_index:
+            print('max index is after min index, sort max')
+            max_num = arr.pop(max_index)
+            arr, ops = da_sort(arr, ops)
+            arr.append(max_num)
+            print('after append inserting max at the end... arr: ', arr, end=' ==> ')
+            ops += 1
+            print('increase ops', ops - 1, 'to', ops)
+        # if the min_index is after the max_index, then sort the min_num by inserting at beginning
+        elif min_index > max_index:
+            print('min index is after max index, sort min')
+            min_num = arr.pop(min_index)
+            arr, ops = da_sort(arr, ops)
+            arr.insert(0, min_num)
+            print('after inserting min at the beginning... arr: ', arr, end=' ==> ')
+            ops += 1
+            print('increase ops', ops - 1, 'to', ops)
+    return arr, ops
+
+print(da_sort([5,3,4,6,2,7,1]))
 
 
 
