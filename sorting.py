@@ -1,3 +1,4 @@
+# O(n^2) Time | O(1) Space
 def bubble_sort(arr):
     # we need to iterate at most n times
     for i in range(len(arr)):
@@ -74,16 +75,17 @@ def is_sorted(arr):
 # I messed up, the task said delete APPEND. There should be no insertions. Oh well, I think this sorting algo is
 # pretty cool anyway. Initially I had it right, where I was only appending. It can easily be turned back to that, but
 # I like that this does it in less operations since we're looking at both min and max values.
+# O(n^2) Time | O(n) Space... worse than bubble sort T_T
 def da_sort(arr, ops=0):
-    if not is_sorted(arr):
+    if not is_sorted(arr): # O(n)
         print('arr', arr)
 
         # if the min_index is already at the beginning, then it's already sorted, check the rest of the array
-        min_index = arr.index(min(arr))
+        min_index = arr.index(min(arr)) # O(n)
         max_index = arr.index(max(arr))
         if min_index == 0:
             print('min index is 0, already sorted at beginning, do not increase ops')
-            min_num = arr.pop(min_index)
+            min_num = arr.pop(min_index) # O(n)
             arr, ops = da_sort(arr, ops)
             arr.insert(0, min_num)
             print('after reinserting min where it was... arr: ', arr)
@@ -114,72 +116,45 @@ def da_sort(arr, ops=0):
             print('increase ops', ops - 1, 'to', ops)
     return arr, ops
 
-print(da_sort([5,3,4,6,2,7,1]))
+# print(da_sort([5,3,4,6,2,7,1]))
 
 
+"""
+You work at a sorting factory. You sort things. One day, your boss comes in to tell you there's a new ball shipment. There are three kinds of balls: red, white, and blue. You've been charged with the task of sorting these balls. Unfortunately, your boss won't let you take your lunch break until you've finished sorting the balls, so you want to do it quickly.
 
+Instructions:
+Create an algorithm that will sort an array of n elements, each element either red, white or blue. The integers 0, 1, 2, will represent red, white, and blue, respectively. Perform this sorting in-place, using constant space. Your solution should complete this in O(n) time, any longer and you'll miss your lunch break!
 
+Example:
+[0, 1, 0, 1, 2, 1] --> [0, 0, 1, 1, 2]
 
-# We can make a binary search tree and add a list of numbers to it in O(n) time
-# Then we can print them in order in O(n) time. So we could technically sort it in O(n)
-# But it would take O(n) space if everything is done iteratively.
-# I tried returning a list from the in_order_traversal but it's quite complicated with the recursive way. Perhaps
-# doing it iteratively would be the way to go if we want to make this work.
-class TreeNode:
+Extra Challenge:
+The boss is threatening to replace your job with a very efficient sorting robot, provided you don't perform better than it would. Luckily for you, the robot requires taking two passes over the array to sort the elements. You're not sure, but you think there might be a way to sort the elements that requires taking only one pass over the array, thus handily out-performing the robot.
 
-    def __init__(self, data=None, left=None, right=None):
-        self.data = data
-        self.left = left
-        self.right = right
+Original Platform:  https://leetcode.com/problems/sort-colors/ 
+"""
+# the white pointer serves as a categorizer. We don't know what the color is until the
+# white pointer looks at it. It is then decided what to swap it with
+def color_sort(nums):
+  white = 0
+  red = 0
+  blue = len(nums) - 1
+  while white <= blue:
+    # if white points to red ball
+    if nums[white] == 0:
+      # swap white and red and increment white and red pointers
+      nums[white], nums[red] = nums[red], nums[white]
+      white += 1
+      red += 1
+    # if white points to white ball, increment white pointer
+    elif nums[white] == 1:
+      white += 1
+    # if white points to blue
+    else:
+       # swap blue ball with the uncategorized ball (pointed by blue), decrease blue ptr
+       nums[white], nums[blue] = nums[blue], nums[white]
+       blue -= 1
+  return nums
 
-    def add(self, data):
-        # if root hasn't been initialized
-        if not self.data:
-            self.data = data
-        else:
-            # begin with root
-            root = self
-            # we'll keep going until we end up finding an empty node either on the left or right side
-            while True:
-                # if data is less than the current root's data
-                if data < root.data:
-                    # check if a left subtree exists
-                    if root.left:
-                        # if so, move to that subtree so we can keep checking if the data is less than the root
-                        root = root.left
-                    else:
-                        # if not, add the data to the left root node
-                        root.left = TreeNode(data)
-                        break
-                # if the data is greater than the current root's data
-                else:
-                    # check if a right subtree exists
-                    if root.right:
-                        # if so, move to that subtree
-                        root = root.right
-                    else:
-                        # if not, add the data to the right subtree's root
-                        root.right = TreeNode(data)
-                        break
-        # not necessary but helps so we can chain this function
-        return self
-
-    def in_order_traversal(self):
-        if self.left:
-            self.left.in_order_traversal()
-        print(self.data, end=' ')
-        if self.right:
-            self.right.in_order_traversal()
-
-    def add_list(self, l):
-        for item in l:
-            self.add(item)
-
-# bst = TreeNode(1)
-# bst.add(2).add(0).add(5).add(3).add(4)
-# # in_order_traversal(bst)
-# bst.in_order_traversal()
-# bst_from_list = TreeNode()
-# bst_from_list.add_list(arr3)
-# print()
-# bst_from_list.in_order_traversal()
+colors1 = [0,1,2,0,2,2,2,1,1,0,2,1]
+print(color_sort(colors1))
