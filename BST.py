@@ -165,6 +165,23 @@ def in_order_traversal_iterative(tree):
     print(result)
     return result
 
+def in_order_traversal_iterative2(tree):
+    myStack = []
+    ans = []
+
+    while myStack or tree:
+        # fill stack
+        while tree:
+            myStack.append(tree)
+            # update to left side
+            tree = tree.left
+        # add value to answer list
+        lowestNodeInStack= myStack.pop()
+        ans.append(lowestNodeInStack.data)
+        # update tree to right side of lowest node in stack
+        tree = lowestNodeInStack.right
+    print(ans)
+    return ans
 
 # Function to find maximum value node in subtree rooted at ptr
 def maximumKey(ptr):
@@ -252,16 +269,48 @@ def validate_bst_2(tree):
             tree = current.right
     return True
 
+# This method used the in order traversal (iterative) technique
+# O(n) space | O(n) time
+def validate_bst_3(tree):
+    myStack = []
+    # we initialize to -inf because we need something lower than any possible value in the BST to compare against
+    # on the first full iteration of our outer while loop
+    prevVal = float('-inf')
+
+    while myStack or tree:
+        # keep adding nodes until we hit bottom (null)
+        while tree:
+            # add parent to stack first
+            myStack.append(tree)
+            # then move left
+            tree = tree.left
+
+        # compare current value with previous one
+        tree = myStack.pop()
+        currVal = tree.data
+
+        # if value at top of stack (current lowest node) is LESS than prev value, then it's not a BST
+        if currVal < prevVal:
+            return False
+
+        # update prev val since we're moving on to next node
+        prevVal = tree.data
+
+        # now that we've added all parent nodes of left branches, let's do it for right subtrees
+        # starting at the lowest level and moving up
+        tree = tree.right
+
+    return True
+
 # main
 my_bst = BST(15).add(10).add(20).add(8).add(12).add(25)
-in_order_traversal(my_bst)  # prints them in order
-print(validate_bst_2(my_bst))
-# # post_order_traversal(my_bst)
-# # pre_order_traversal(my_bst)
-# # print('is 10 in the tree?', my_bst.contains(10))
-# # print('is 100 in the tree?', my_bst.contains(100))
-# # root = deleteNode(my_bst, 4)
-# # in_order_traversal(root)
+# in_order_traversal(my_bst)  # prints them in order
+# in_order_traversal_iterative2(my_bst)
+# print(validate_bst_3(my_bst))
+# post_order_traversal(my_bst)
+pre_order_traversal(my_bst)
+# print('is 10 in the tree?', my_bst.contains(10))
+# print('is 100 in the tree?', my_bst.contains(100))
+# root = deleteNode(my_bst, 4)
 # print()
 # my_bst.delete(20)
-# in_order_traversal(my_bst)
